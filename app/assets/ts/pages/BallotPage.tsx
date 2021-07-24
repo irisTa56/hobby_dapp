@@ -79,11 +79,11 @@ const BallotPage: FC = () => {
     (async () => {
       try {
         setProposals(await Ballot.fetchProposals());
-        await Ballot.initContract();
-        const isChairperson = await Ballot.isChairperson()
+        const ballot = await Ballot.init();
+        const isChairperson = await ballot.isChairperson()
         setIsChairperson(isChairperson);
         if (isChairperson) {
-          setAddresses(await Ballot.listAddresses());
+          setAddresses(await ballot.listAddresses());
         }
       } catch (error) {
         console.error(error);

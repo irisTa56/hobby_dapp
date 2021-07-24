@@ -1,0 +1,13 @@
+{
+  "repository": {},
+  "description": " ",
+  "license": "MIT",
+  "scripts": {
+    "start-ganache": "ganache-cli -h localhost -p 7545 -i 5777",
+    "migrate-contract-from-scratch": "truffle migrate –-reset"
+  },
+  "devDependencies": {
+    "ganache-cli": "^6.12.2",
+    "truffle": "^5.1.65"
+  }
+}

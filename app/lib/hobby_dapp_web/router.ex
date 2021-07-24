@@ -36,4 +36,10 @@ defmodule HobbyDappWeb.Router do
   # scope "/api", HobbyDappWeb do
   #   pipe_through :api
   # end
+
+  scope "/", HobbyDappWeb do
+    pipe_through :browser
+
+    get "/*component", RootController, :index
+  end
 end

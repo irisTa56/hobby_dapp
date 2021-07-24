@@ -13,3 +13,29 @@ const _css = require("../css/phoenix.css");
 //     import socket from "./socket"
 //
 import "phoenix_html"
+
+import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
+
+import BallotPage from "../ts/pages/BallotPage";
+
+ReactDOM.render(
+  <BrowserRouter>
+    <Switch>
+      <Route path="/ballot">
+        <BallotPage />
+      </Route>
+      <Route>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/ballot">Ballot</Link>
+            </li>
+          </ul>
+        </nav>
+      </Route>
+    </Switch>
+  </BrowserRouter>,
+  document.getElementById("root")
+);

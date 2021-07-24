@@ -1,0 +1,22 @@
+[
+  {
+    "id": 0,
+    "name": "そら",
+    "picture": "images/sora.png"
+  },
+  {
+    "id": 1,
+    "name": "みどり",
+    "picture": "images/midori.png"
+  },
+  {
+    "id": 2,
+    "name": "みかん",
+    "picture": "images/mikan.png"
+  },
+  {
+    "id": 3,
+    "name": "もも",
+    "picture": "images/momo.png"
+  }
+]

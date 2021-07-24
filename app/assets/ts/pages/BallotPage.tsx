@@ -14,6 +14,7 @@ const Proposals: FC<{ proposals: Proposal[] }> = ({ proposals }) => {
       <div id="proposals-row" className="row">
         { proposals.map((p) => <ProposalPanel key={ p.id } proposal={ p } />) }
       </div>
+      <hr/>
     </div>
   );
 }
@@ -46,7 +47,19 @@ const ProposalPanel: FC<{ proposal: Proposal }> = ({ proposal }) => {
   );
 }
 
-const AddressRegister: FC<{ addresses: string[] }> = ({ addresses }) => {
+const AddressRegister: FC = () => {
+  const [addresses, setAddresses] = useState<string[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setAddresses(await Ballot.getInstance().then((b) => b.listAddresses()));
+      } catch (error) {
+        console.error(error);
+      }
+    })();
+  }, []);
+
   return (
     <div className="container">
       <div className="row" id="address-div">
@@ -71,7 +84,6 @@ const AddressOption: FC<{ address: string }> = ({ address }) => {
 }
 
 const BallotPage: FC = () => {
-  const [addresses, setAddresses] = useState<string[]>([]);
   const [isChairperson, setIsChairperson] = useState<boolean>(false);
   const [proposals, setProposals] = useState<Proposal[]>([]);
 
@@ -79,12 +91,7 @@ const BallotPage: FC = () => {
     (async () => {
       try {
         setProposals(await Ballot.fetchProposals());
-        const ballot = await Ballot.init();
-        const isChairperson = await ballot.isChairperson()
-        setIsChairperson(isChairperson);
-        if (isChairperson) {
-          setAddresses(await ballot.listAddresses());
-        }
+        setIsChairperson(await Ballot.getInstance().then((b) => b.isChairperson()));
       } catch (error) {
         console.error(error);
       }
@@ -94,8 +101,7 @@ const BallotPage: FC = () => {
   return (
     <div>
       <Proposals proposals={ proposals } />
-      <hr/>
-      { isChairperson && <AddressRegister addresses={ addresses } /> }
+      { isChairperson && <AddressRegister /> }
       <div className="container">
         <button className="btn btn-success" type="button" id="win-count">
           Declare Winner

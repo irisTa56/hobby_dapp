@@ -8,7 +8,7 @@ export default class Ballot {
     private contract: ethers.Contract,
   ) {}
 
-  static async init() {
+  static async getInstance() {
     if (!Ballot.instance) {
       const provider = Ballot.initProvider();
       const contract = await Ballot.initContract(provider);

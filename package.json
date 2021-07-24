@@ -2,7 +2,8 @@
   "name": "hobby_dapp",
   "version": "0.1.0",
   "scripts": {
-    "setup-all": "npm install --prefix contract && (cd app && mix setup)",
+    "setup-all": "./script/setup_all.sh",
+    "outdated-all": "./script/outdated_all.sh",
     "start-ganache": "npm run start-ganache --prefix contract",
     "start-phoenix-server": "cd app && iex -S mix phx.server",
     "migrate-contract-from-scratch": "npm run migrate-contract-from-scratch --prefix contract"

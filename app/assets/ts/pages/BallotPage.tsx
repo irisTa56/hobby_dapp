@@ -1,6 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import { Proposal } from "../models/proposal";
 import Ballot from "../lib/ballot";
+import * as ReactHelper from "../lib/helper/react";
 
 const Proposals: FC<{ proposals: Proposal[] }> = ({ proposals }) => {
   return (
@@ -37,7 +38,7 @@ const ProposalPanel: FC<{ proposal: Proposal }> = ({ proposal }) => {
           />
           <br/><br/>
           <div className="col-md-12 text-center">
-            <button className="btn btn-default btn-vote" type="button" data-id={ proposal.id }>
+            <button type="button" data-id={ proposal.id }>
               Vote
             </button>
           </div>
@@ -52,25 +53,19 @@ const AddressRegister: FC = () => {
 
   useEffect(() => {
     (async () => {
-      try {
-        setAddresses(await Ballot.getInstance().then((b) => b.listAddresses()));
-      } catch (error) {
-        console.error(error);
-      }
+      setAddresses(await Ballot.listAddresses());
     })();
   }, []);
 
   return (
     <div className="container">
-      <div className="row" id="address-div">
-        <div style={{ marginLeft: "1rem", marginTop: "2rem" }}>
-          <span>Address : </span>
-          <select id="enter-address" defaultValue="">
-            { addresses.map((a) => <AddressOption key={ a } address={ a } />) }
-          </select>
-        </div>
+      <div style={{ marginLeft: "1rem", marginTop: "2rem" }}>
+        <span>Address : </span>
+        <select id="enter-address" defaultValue="">
+          { addresses.map((a) => <AddressOption key={ a } address={ a } />) }
+        </select>
       </div>
-      <button className="btn btn-info" type="button" id="register">
+      <button type="button" id="register">
         Register
       </button>
       <br/>
@@ -83,18 +78,47 @@ const AddressOption: FC<{ address: string }> = ({ address }) => {
   return <option value={ address }>{ address }</option>
 }
 
+const AdvancePhase: FC = () => {
+  const [currentPhase, setCurrentPhase] = useState<number>(0);
+  const [isClicked, onClick, afterClicked] = ReactHelper.useClick();
+
+  useEffect(() => {
+    (async () => {
+      setCurrentPhase(await Ballot.currentPhase());
+    })();
+  }, []);
+
+  useEffect(() => {
+    afterClicked(() => {
+      (async () => {
+        await Ballot.advancePhase();
+        setCurrentPhase(await Ballot.currentPhase());
+      })();
+    });
+  }, [isClicked]);
+
+  return (
+    <div className="container">
+      <div style={{ marginLeft: "1rem", marginTop: "2rem", marginBottom: "2rem" }}>
+        <span>Current Phase : { currentPhase }</span>
+      </div>
+      <button type="button" id="advance-state" onClick={ onClick } >
+        Advance State
+      </button>
+      <br/>
+      <hr/>
+    </div>
+  );
+}
+
 const BallotPage: FC = () => {
   const [isChairperson, setIsChairperson] = useState<boolean>(false);
   const [proposals, setProposals] = useState<Proposal[]>([]);
 
   useEffect(() => {
     (async () => {
-      try {
-        setProposals(await Ballot.fetchProposals());
-        setIsChairperson(await Ballot.getInstance().then((b) => b.isChairperson()));
-      } catch (error) {
-        console.error(error);
-      }
+      setProposals(await Ballot.fetchProposals());
+      setIsChairperson(await Ballot.isChairperson());
     })();
   }, []);
 
@@ -102,8 +126,9 @@ const BallotPage: FC = () => {
     <div>
       <Proposals proposals={ proposals } />
       { isChairperson && <AddressRegister /> }
+      { isChairperson && <AdvancePhase /> }
       <div className="container">
-        <button className="btn btn-success" type="button" id="win-count">
+        <button type="button" id="declare-winner">
           Declare Winner
         </button>
       </div>

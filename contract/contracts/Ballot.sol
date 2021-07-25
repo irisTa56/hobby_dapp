@@ -13,10 +13,10 @@ contract Ballot {
     mapping (uint => uint) private proposals;
 
     enum Phase { Init, Regs, Vote, Done }
-    Phase public phase = Phase.Init;
+    Phase public currentPhase = Phase.Init;
 
     modifier validPhase(Phase reqPhase) {
-        require(phase == reqPhase, "phaseError");
+        require(currentPhase == reqPhase, "phaseError");
         _;
     }
 
@@ -35,9 +35,13 @@ contract Ballot {
         voters[chairperson].weight = 2;
     }
 
-    function changePhase(Phase newPhase) public onlyChair {
-        require(newPhase < phase, "invalidPhaseTransition");
-        phase = newPhase;
+    function advancePhase() public onlyChair {
+        if (currentPhase == Phase.Done) {
+            currentPhase = Phase.Init;
+        } else {
+            uint nextPhase = uint(currentPhase) + 1;
+            currentPhase = Phase(nextPhase);
+        }
     }
 
     function register(address voter) public validPhase(Phase.Regs) onlyChair {

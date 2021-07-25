@@ -44,16 +44,28 @@ export default class Ballot {
     return fetch("data/proposals.json").then(res => res.json());
   }
 
-  async isChairperson(): Promise<boolean> {
+  static async isChairperson(): Promise<boolean> {
+    const instance = await Ballot.getInstance();
     return (
       Promise.all([
-        this.provider.getSigner().getAddress(),
-        this.contract.chairperson(),
+        instance.provider.getSigner().getAddress(),
+        instance.contract.chairperson(),
       ]).then(([signer, chairperson]) => signer === chairperson )
     );
   }
 
-  async listAddresses(): Promise<string[]> {
-    return this.provider.listAccounts();
+  static async listAddresses(): Promise<string[]> {
+    const instance = await Ballot.getInstance();
+    return instance.provider.listAccounts();
+  }
+
+  static async currentPhase(): Promise<number> {
+    const instance = await Ballot.getInstance();
+    return instance.contract.currentPhase();
+  }
+
+  static async advancePhase(): Promise<void> {
+    const instance = await Ballot.getInstance();
+    return instance.contract.advancePhase();
   }
 }

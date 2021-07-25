@@ -49,7 +49,7 @@ const ProposalPanel: FC<{ proposal: Proposal }> = ({ proposal }) => {
 }
 
 const AddressRegister: FC = () => {
-  const [addresses] = ReactHelper.useLazyState<string[]>([], () => Ballot.listAddresses());
+  const [addresses] = ReactHelper.useLazyState([], () => Ballot.listAddresses());
 
   return (
     <div className="container">
@@ -73,7 +73,7 @@ const AddressOption: FC<{ address: string }> = ({ address }) => {
 }
 
 const AdvancePhase: FC = () => {
-  const [currentPhase, updateCurrentPhase] = ReactHelper.useLazyState<number>(0, () => Ballot.currentPhase());
+  const [currentPhase, updateCurrentPhase] = ReactHelper.useLazyState(0, () => Ballot.currentPhase());
   const onClick = ReactHelper.useButtonClick(async () => {
     await Ballot.advancePhase();
     updateCurrentPhase();
@@ -94,8 +94,8 @@ const AdvancePhase: FC = () => {
 }
 
 const BallotPage: FC = () => {
-  const [isChairperson] = ReactHelper.useLazyState<boolean>(false, () => Ballot.isChairperson());
-  const [proposals] = ReactHelper.useLazyState<Proposal[]>([], () => Ballot.fetchProposals());
+  const [isChairperson] = ReactHelper.useLazyState(false, () => Ballot.isChairperson());
+  const [proposals] = ReactHelper.useLazyState([], () => Ballot.fetchProposals());
 
   return (
     <div>

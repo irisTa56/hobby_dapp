@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC } from "react";
 import { Proposal } from "../models/proposal";
 import Ballot from "../lib/ballot";
 import * as ReactHelper from "../lib/helper/react";
@@ -49,13 +49,7 @@ const ProposalPanel: FC<{ proposal: Proposal }> = ({ proposal }) => {
 }
 
 const AddressRegister: FC = () => {
-  const [addresses, setAddresses] = useState<string[]>([]);
-
-  useEffect(() => {
-    (async () => {
-      setAddresses(await Ballot.listAddresses());
-    })();
-  }, []);
+  const [addresses] = ReactHelper.useLazyState<string[]>([], () => Ballot.listAddresses());
 
   return (
     <div className="container">
@@ -79,23 +73,11 @@ const AddressOption: FC<{ address: string }> = ({ address }) => {
 }
 
 const AdvancePhase: FC = () => {
-  const [currentPhase, setCurrentPhase] = useState<number>(0);
-  const [isClicked, onClick, afterClicked] = ReactHelper.useClick();
-
-  useEffect(() => {
-    (async () => {
-      setCurrentPhase(await Ballot.currentPhase());
-    })();
-  }, []);
-
-  useEffect(() => {
-    afterClicked(() => {
-      (async () => {
-        await Ballot.advancePhase();
-        setCurrentPhase(await Ballot.currentPhase());
-      })();
-    });
-  }, [isClicked]);
+  const [currentPhase, updateCurrentPhase] = ReactHelper.useLazyState<number>(0, () => Ballot.currentPhase());
+  const onClick = ReactHelper.useButtonClick(async () => {
+    await Ballot.advancePhase();
+    updateCurrentPhase();
+  });
 
   return (
     <div className="container">
@@ -112,15 +94,8 @@ const AdvancePhase: FC = () => {
 }
 
 const BallotPage: FC = () => {
-  const [isChairperson, setIsChairperson] = useState<boolean>(false);
-  const [proposals, setProposals] = useState<Proposal[]>([]);
-
-  useEffect(() => {
-    (async () => {
-      setProposals(await Ballot.fetchProposals());
-      setIsChairperson(await Ballot.isChairperson());
-    })();
-  }, []);
+  const [isChairperson] = ReactHelper.useLazyState<boolean>(false, () => Ballot.isChairperson());
+  const [proposals] = ReactHelper.useLazyState<Proposal[]>([], () => Ballot.fetchProposals());
 
   return (
     <div>

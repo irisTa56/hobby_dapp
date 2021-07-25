@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { Proposal } from "../models/proposal";
 import Ballot from "../lib/ballot";
 import * as ReactHelper from "../lib/helper/react";
@@ -50,16 +50,25 @@ const ProposalPanel: FC<{ proposal: Proposal }> = ({ proposal }) => {
 
 const AddressRegister: FC = () => {
   const [addresses] = ReactHelper.useLazyState([], () => Ballot.listAddresses());
+  const [targetAddress, setTargetAddress] = useState(addresses[0]);
+
+  useEffect(() => {
+    setTargetAddress(targetAddress || addresses[0]);
+  }, [addresses]);
+
+  const onClick = ReactHelper.useButtonClick(async () => {
+    await Ballot.register(targetAddress);
+  });
 
   return (
     <div className="container">
       <div style={{ marginLeft: "1rem", marginTop: "2rem" }}>
         <span>Address : </span>
-        <select id="enter-address" defaultValue="">
+        <select value={ targetAddress } onChange={ (e) => { setTargetAddress(e.target.value); } }>
           { addresses.map((a) => <AddressOption key={ a } address={ a } />) }
         </select>
       </div>
-      <button type="button" id="register">
+      <button type="button" onClick={ onClick }>
         Register
       </button>
       <br/>
@@ -84,7 +93,7 @@ const AdvancePhase: FC = () => {
       <div style={{ marginLeft: "1rem", marginTop: "2rem", marginBottom: "2rem" }}>
         <span>Current Phase : { currentPhase }</span>
       </div>
-      <button type="button" id="advance-state" onClick={ onClick } >
+      <button type="button" onClick={ onClick } >
         Advance State
       </button>
       <br/>
@@ -103,7 +112,7 @@ const BallotPage: FC = () => {
       { isChairperson && <AddressRegister /> }
       { isChairperson && <AdvancePhase /> }
       <div className="container">
-        <button type="button" id="declare-winner">
+        <button type="button">
           Declare Winner
         </button>
       </div>

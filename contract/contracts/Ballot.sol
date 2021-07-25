@@ -45,7 +45,7 @@ contract Ballot {
     }
 
     function register(address voter) public validPhase(Phase.Regs) onlyChair {
-        require(!voters[voter].voted, "alreadyVotedAccount");
+        require(voters[voter].weight == 0, "alreadyRegisteredAccount");
         voters[voter].weight = 1;
         voters[voter].voted = false;
     }

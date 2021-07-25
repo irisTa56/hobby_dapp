@@ -66,6 +66,16 @@ export default class Ballot {
 
   static async advancePhase(): Promise<void> {
     const instance = await Ballot.getInstance();
-    return instance.contract.advancePhase();
+    await instance.contract.advancePhase();
+  }
+
+  static async register(address: string): Promise<void> {
+    const instance = await Ballot.getInstance();
+    try {
+      await instance.contract.register(address);
+      console.log(`Registered: ${address}`);
+    } catch (err) {
+      console.error(err);
+    }
   }
 }

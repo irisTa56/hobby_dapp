@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from "react";
 import { Proposal } from "../models/proposal";
-import Ballot from "../lib/ballot";
+import * as Ballot from "../lib/ballot";
 import * as ReactHelper from "../lib/helper/react";
 
 const Proposals: FC<{ proposals: Proposal[] }> = ({ proposals }) => {
@@ -21,6 +21,8 @@ const Proposals: FC<{ proposals: Proposal[] }> = ({ proposals }) => {
 }
 
 const ProposalPanel: FC<{ proposal: Proposal }> = ({ proposal }) => {
+  const [isRegistered] = ReactHelper.useLazyState(false, () => Ballot.isRegistered());
+
   return (
       <div className="col-sm-8 col-md-2 col-lg-3">
       <div className="panel panel-default panel-proposal">
@@ -38,7 +40,7 @@ const ProposalPanel: FC<{ proposal: Proposal }> = ({ proposal }) => {
           />
           <br/><br/>
           <div className="col-md-12 text-center">
-            <button type="button" data-id={ proposal.id }>
+            <button type="button" data-id={ proposal.id } disabled={ !isRegistered }>
               Vote
             </button>
           </div>
@@ -82,6 +84,7 @@ const AddressOption: FC<{ address: string }> = ({ address }) => {
 }
 
 const AdvancePhase: FC = () => {
+  // TODO: update currentPhase based on an event from blockchain
   const [currentPhase, updateCurrentPhase] = ReactHelper.useLazyState(0, () => Ballot.currentPhase());
   const onClick = ReactHelper.useButtonClick(async () => {
     await Ballot.advancePhase();

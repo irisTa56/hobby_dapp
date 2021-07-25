@@ -3,7 +3,7 @@
   "description": " ",
   "license": "MIT",
   "scripts": {
-    "start-ganache": "ganache-cli -h localhost -p 7545 -i 5777",
+    "start-ganache": "ganache-cli -d -h localhost -p 7545 -i 5777",
     "migrate-contract-from-scratch": "truffle migrate –-reset"
   },
   "devDependencies": {

@@ -9,7 +9,7 @@ contract Ballot {
 
     address public chairperson;
 
-    mapping (address => Voter) private voters;
+    mapping (address => Voter) public voters;
     mapping (uint => uint) private proposals;
 
     enum Phase { Init, Regs, Vote, Done }

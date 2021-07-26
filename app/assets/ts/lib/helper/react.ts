@@ -9,7 +9,9 @@ export function useLazyState<T>(initState: T, fetcher: () => T | Promise<T>): [T
     setState(await fetcher());
   };
   useEffect(() => {
-    updater();
+    (async () => {
+      await updater();
+    })();
   }, []);
   return [state, updater];
 }
@@ -17,10 +19,12 @@ export function useLazyState<T>(initState: T, fetcher: () => T | Promise<T>): [T
 export function useButtonClick(callback: () => void | Promise<void>): EventHandler<ButtonEvent> {
   const [isClicked, setIsClicked] = React.useState<boolean>(false);
   useEffect(() => {
-    if (isClicked) {
-      setIsClicked(false);
-      callback();
-    }
+    (async () => {
+      if (isClicked) {
+        setIsClicked(false);
+        await callback();
+      }
+    })();
   }, [isClicked]);
   return (e: ButtonEvent) => {
     setIsClicked(true);

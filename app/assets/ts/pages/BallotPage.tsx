@@ -88,7 +88,7 @@ const AdvancePhase: FC = () => {
   const [currentPhase, updateCurrentPhase] = ReactHelper.useLazyState(0, () => Ballot.currentPhase());
   const onClick = ReactHelper.useButtonClick(async () => {
     await Ballot.advancePhase();
-    updateCurrentPhase();
+    await updateCurrentPhase();
   });
 
   return (

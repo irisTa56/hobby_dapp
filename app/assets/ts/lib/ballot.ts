@@ -40,6 +40,13 @@ export async function advancePhase(): Promise<void> {
   await (await promisedContract).advancePhase();
 }
 
+export async function onPhaseChanged(callback: () => void | Promise<void>): Promise<void> {
+  (await promisedContract).on("PhaseChanged", async (toPhase) => {
+    console.log(`Phase has changed to ${toPhase}`);
+    await callback();
+  });
+}
+
 export async function register(address: string): Promise<void> {
   try {
     await (await promisedContract).register(address);

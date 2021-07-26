@@ -84,12 +84,14 @@ const AddressOption: FC<{ address: string }> = ({ address }) => {
 }
 
 const AdvancePhase: FC = () => {
-  // TODO: update currentPhase based on an event from blockchain
   const [currentPhase, updateCurrentPhase] = ReactHelper.useLazyState(0, () => Ballot.currentPhase());
   const onClick = ReactHelper.useButtonClick(async () => {
     await Ballot.advancePhase();
-    await updateCurrentPhase();
   });
+
+  useEffect(() => {
+    Ballot.onPhaseChanged(updateCurrentPhase);
+  }, []);
 
   return (
     <div className="container">

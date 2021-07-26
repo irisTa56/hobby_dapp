@@ -15,6 +15,8 @@ contract Ballot {
     enum Phase { Init, Regs, Vote, Done }
     Phase public currentPhase = Phase.Init;
 
+    event PhaseChanged(Phase newPhase);
+
     modifier validPhase(Phase reqPhase) {
         require(currentPhase == reqPhase, "phaseError");
         _;
@@ -42,6 +44,7 @@ contract Ballot {
             uint nextPhase = uint(currentPhase) + 1;
             currentPhase = Phase(nextPhase);
         }
+        emit PhaseChanged(currentPhase);
     }
 
     function register(address voter) public validPhase(Phase.Regs) onlyChair {
